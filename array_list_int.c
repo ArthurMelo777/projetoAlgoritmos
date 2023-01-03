@@ -93,7 +93,7 @@ unsigned int array_list_capacity(struct array_list_int *list) {
 
 
 double array_list_percent_occupied(struct array_list_int *list) {
-    return list->size/list->capacity;
+    return array_list_size(list)/array_list_capacity(list);
 }
 
 

@@ -14,7 +14,7 @@ struct linked_list_int * linked_list_create() {
 
 int linked_list_get(struct linked_list_int *list, int index) {
     if (index < 0 || index >= list->size) {
-        return 0;
+        return -1;
     }
     
     struct linked_list_int_node * no = list->first;
@@ -27,20 +27,33 @@ int linked_list_get(struct linked_list_int *list, int index) {
 
 unsigned int linked_list_push_back(struct linked_list_int *list, int value) {
     struct linked_list_int_node * no, * noAnt;
-    noAnt = list->last;
-    no->next = 0;
-    no->prev = noAnt;
-    no->value = value;
-    noAnt->next = no;
-    list->last = no;
-    list->size++;
+    no = (struct linked_list_int_node * ) malloc(sizeof(struct linked_list_int_node));
+    noAnt = (struct linked_list_int_node * ) malloc(sizeof(struct linked_list_int_node));
+    if (list->first == 0) {
+        no->next = 0;
+        no->prev = 0;
+        no->value = value;
+        list->first = no;
+        list->last = no;
+    }
+    else {
+        noAnt = list->last;
+        no->next = 0;
+        no->prev = noAnt;
+        no->value = value;
+        noAnt->next = no;
+        list->last = no;
+    }
 
+    list->size = list->size+1;
     return list->size;
 }
 
 
 unsigned int linked_list_pop_back(struct linked_list_int *list) {
     struct linked_list_int_node * no, *noAnt;
+    no = (struct linked_list_int_node * ) malloc(sizeof(struct linked_list_int_node));
+    noAnt = (struct linked_list_int_node * ) malloc(sizeof(struct linked_list_int_node));
     no = list->last;
     noAnt = no->prev;
     noAnt->next = 0;
@@ -87,6 +100,8 @@ unsigned int linked_list_insert_at(struct linked_list_int *list, int index, int 
 unsigned int linked_list_remove_from(struct linked_list_int *list, int index) {
     struct linked_list_int_node * no, * noAnt, * noSuc;
     no = list->first;
+    noSuc = (struct linked_list_int_node * ) malloc(sizeof(struct linked_list_int_node));
+    noAnt = (struct linked_list_int_node * ) malloc(sizeof(struct linked_list_int_node));
 
     if (index < list->size) {
         for (int i = 0; i < index; i++) {
@@ -94,11 +109,13 @@ unsigned int linked_list_remove_from(struct linked_list_int *list, int index) {
         }
 
         if (index == list->size-1) linked_list_pop_back(list);
-        noAnt = no->prev;
-        noSuc = no->next;
-        noAnt->next = noSuc;
-        noSuc->prev = noAnt;
-        list->size--;
+        else {
+            noAnt = no->prev;
+            noSuc = no->next;
+            noAnt->next = noSuc;
+            noSuc->prev = noAnt;
+            list->size--;
+        }
     }
     
     return list->size;
